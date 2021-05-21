@@ -1,0 +1,13 @@
+.bookCard{
+  display: inline-block;
+  width: 30%;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.BookCard{
+  margin-left: 50px;
+}
+.cross{
+   cursor: pointer;
+}
