@@ -6,62 +6,47 @@ import * as actionTypes from "../../store/actions/bookAction";
 function Book(props) {
 
   const [book, setBook] = useState(null);
-  const [allBooks, addBooks] = useState([{id:100, bookName: 'Alchemist', quotes: ['When you want something, all the universe conspires in helping you to achieve it.'] },
-  {id:101, bookName: 'Attitude is Everything', quotes: ['You become what you think'] }]);
-
-  useEffect(()=>{
+  const { getAllBooks } = props;
+  useEffect(() => {
     props.getAllBooks();
-  },[])
-  const [quote,setQuotes] = useState("");
+  }, [getAllBooks])
+  const [quote, setQuotes] = useState("");
   const addAllBooks = () => {
     props.onAddBook(book);
     setBook(null);
 
   }
 
-  const addQuotes = (event,id) =>{
+  const addQuotes = (event, id) => {
     event.preventDefault();
-    props.onAddQuote(id,quote);
-    if(quote.length===0){
+    if (quote.length === 0) {
       return;
     }
-    const bk = props.allBooks.filter(bk=>bk.id===id);
-    bk[0].quotes.push(quote);
-    const index = props.allBooks.findIndex(x=>x.id===id);
-    const books = [...props.allBooks]
-    books[index] = bk[0];
-    
-    addBooks(books);
+    props.onAddQuote(id, quote);
+    props.getAllBooks();
     setQuotes("");
   }
 
-  const setQuote= (event) =>{
-   
+  const setQuote = (event) => {
+
     setQuotes(event.target.value)
   }
 
   const setBookObject = (event) => {
     const obj = {
-      id:new Date().valueOf(),
+      id: new Date().valueOf(),
       bookName: event.target.value,
       quotes: []
     }
     setBook(obj);
   }
 
-  const updateQuote =(event,quote,bookId,index)=>{
-    const bk = props.allBooks.filter(bk=>bk.id===bookId);
+  const updateQuote = (event, quote, bookId, index) => {
+    const bk = props.allBooks.filter(bk => bk.id === bookId);
     bk[0].quotes[index] = event.target.value;
   }
-  const deleteQuote = (book,index)=>{
-    let booksCopy = [...props.allBooks];
-    booksCopy = booksCopy.map(b=>{
-      if(b.id===book.id){
-        b.quotes.splice(index,1);
-      }
-      return b;
-    })
-    addBooks(booksCopy);
+  const deleteQuote = (book, q) => {
+    props.removeQuote(q);
   }
   return (
     <div>
@@ -73,24 +58,25 @@ function Book(props) {
           </div>
         </div>
       </div>
-      <BookCard books={props.allBooks} addQuotes={addQuotes} setQuote = {setQuote}
-       updateQuote={updateQuote} deleteQuote={deleteQuote}/>
+      <BookCard books={props.allBooks} addQuotes={addQuotes} setQuote={setQuote}
+        updateQuote={updateQuote} deleteQuote={deleteQuote} />
     </div>
   )
 }
 
-const mapStateToProps = (state)=>{
-  return{
-   allBooks:state.quoteReducer.books
+const mapStateToProps = (state) => {
+  return {
+    allBooks: state.quoteReducer.books
   }
 }
 
-const mapDispatchToProps = (dispatch)=>{
-  return{
-    getAllBooks:()=>dispatch(actionTypes.getAllBooks()),
-    onAddBook:(book)=>dispatch(actionTypes.addBook(book)),
-    onAddQuote:(id,quote)=>dispatch(actionTypes.onAddQuote(id,quote))
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllBooks: () => dispatch(actionTypes.getAllBooks()),
+    onAddBook: (book) => dispatch(actionTypes.addBook(book)),
+    onAddQuote: (id, quote) => dispatch(actionTypes.onAddQuote(id, quote)),
+    removeQuote: (quote) => dispatch(actionTypes.removeQuote(quote))
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Book);
+export default connect(mapStateToProps, mapDispatchToProps)(Book);

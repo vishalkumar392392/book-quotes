@@ -11,6 +11,20 @@ export const getAllBooks = () =>{
   }
 }
 
+export const removeQuote = (quote) =>{
+  return function(dispatch){
+    axios.delete("/removeQuote/"+quote).then(res=>{
+      axios.get("/book")
+         .then(res=>{
+           console.log(res.data)
+           dispatch({type:"ALL_BOOKS",books:res.data})
+         }).catch(error=>{
+          console.log(error);
+        })
+    })
+  }
+}
+
 export const onAddQuote = (id,quote) =>{
   return function (dispatch){
     axios.get("/addQuote",{

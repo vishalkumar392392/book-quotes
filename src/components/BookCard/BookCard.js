@@ -48,7 +48,7 @@ const bookCrad = (props) => {
                           </b>
                           <span
                             className="cross"
-                            onClick={() => props.deleteQuote(book, index)}
+                            onClick={() => props.deleteQuote(book, q)}
                           >
                             {" "}
                             &times;
